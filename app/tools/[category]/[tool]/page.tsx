@@ -22,5 +22,5 @@ export default async function ToolPage({ params }: { params: Promise<Params> }) 
   const { category, tool: slug } = await params
   const tool = getTool(category, slug)
   if (!tool) notFound()
-  return <div className="min-h-screen bg-white dark:bg-slate-950"><Header /><ToolWrapper tool={{ name: tool.name, category: tool.category, description: tool.description }} /><Footer /></div>
+  return <div className="min-h-screen bg-white dark:bg-slate-950"><Header /><ToolWrapper tool={{ name: tool.name, slug: tool.slug, category: tool.category, description: tool.description }} /><Footer /></div>
 }
