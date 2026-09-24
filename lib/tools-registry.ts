@@ -60,8 +60,48 @@ export const tools: Tool[] = TOOL_CATEGORIES.flatMap((category) =>
   })),
 )
 
-export const getTool = (category: string, slug: string) =>
-  tools.find((tool) => tool.category.toLowerCase() === category.toLowerCase() && tool.slug === slug)
+// Category and Slug aliases for seamless routing without 404
+const categoryAliases: Record<string, ToolCategory> = {
+  pdf: 'PDF',
+  image: 'Image',
+  qr: 'QR',
+  'qr-barcode': 'QR',
+  security: 'Security',
+  text: 'Text',
+  developer: 'Developer',
+  ai: 'AI',
+  calculators: 'Calculators',
+  calculator: 'Calculators',
+  web: 'Web',
+}
+
+const slugAliases: Record<string, string> = {
+  'password-generator': 'password-generator',
+  'qr-generator': 'qr-code-generator',
+  'compress': 'compress-image',
+  'word-counter': 'word-counter',
+  'json-formatter': 'json-formatter',
+  'hash-generator': 'hash-generator',
+  'base64': 'base64-encoder',
+  'case-converter': 'case-converter',
+  'percentage': 'percentage-calculator',
+  'resize': 'resize-image',
+}
+
+export const getTool = (categoryStr: string, slugStr: string) => {
+  const normCategory = categoryStr.toLowerCase().trim()
+  const normSlug = slugStr.toLowerCase().trim()
+
+  const mappedCategory = categoryAliases[normCategory] || TOOL_CATEGORIES.find(c => c.toLowerCase() === normCategory)
+  const mappedSlug = slugAliases[normSlug] || normSlug
+
+  if (mappedCategory) {
+    const match = tools.find((t) => t.category === mappedCategory && (t.slug === mappedSlug || t.slug === normSlug || t.slug.includes(normSlug) || normSlug.includes(t.slug)))
+    if (match) return match
+  }
+
+  return tools.find((t) => t.slug === mappedSlug || t.slug === normSlug || t.slug.includes(normSlug))
+}
 
 export const getToolsByCategory = (category: ToolCategory) => tools.filter((tool) => tool.category === category)
 
